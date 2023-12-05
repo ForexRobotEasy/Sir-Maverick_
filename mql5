@@ -1,0 +1,88 @@
+mql5
+// Developer: Forex Robot Easy Team
+// Developer's Site: forexroboteasy.com
+// Program Name: Sir Maverick
+
+// Include necessary libraries
+#include <Trade\Trade.mqh>
+#include <Math\Math.mqh>
+
+// Declare global variables
+input double risk = 1.0; // Risk percentage per trade
+input double reward = 2.0; // Reward percentage per trade
+input double stopLossPercentage = 1.5; // Stop loss percentage
+input double trailingStopDistance = 20.0; // Trailing stop distance
+input double trailingStopStep = 5.0; // Trailing stop step
+input bool useCustomSettings = false; // Use custom settings flag
+
+// Define trading algorithm
+void SirMaverickAlgorithm()
+{
+    // Get current market conditions
+    double currentPrice = MarketInfo(Symbol(), MODE_BID);
+    double previousPrice = iClose(Symbol(), PERIOD_CURRENT, 1);
+
+    // Calculate risk/reward ratio
+    double riskRewardRatio = reward / risk;
+
+    // Calculate stop loss and take profit levels
+    double stopLossLevel = currentPrice - (currentPrice * stopLossPercentage / 100);
+    double takeProfitLevel = currentPrice + (currentPrice * riskRewardRatio / 100);
+
+    // Create trading order with calculated levels
+    CTrade trade;
+    trade.BuyStop(Symbol(), Volume(), currentPrice, currentPrice + 10 * _Point, stopLossLevel, takeProfitLevel, 'Sir Maverick');
+
+    // Set floating stop loss
+    double trailingStopLevel = currentPrice - trailingStopDistance * _Point;
+    trade.ModifyPositionStopLoss(trailingStopLevel);
+
+    // Print trading information
+    Print('Order placed: ', trade.OrderTicket());
+    Print('Stop loss level: ', stopLossLevel);
+    Print('Take profit level: ', takeProfitLevel);
+}
+
+// Program entry point
+void OnTick()
+{
+    // Check if custom settings are enabled
+    if (useCustomSettings)
+    {
+        // Call custom settings function
+        ApplyCustomSettings();
+    }
+
+    // Call trading algorithm
+    SirMaverickAlgorithm();
+}
+
+// Apply custom settings
+void ApplyCustomSettings()
+{
+    // Add custom settings logic here
+}
+
+// Program initialization
+void OnInit()
+{
+    // Add initialization logic here
+}
+
+// Program deinitialization
+void OnDeinit(const int reason)
+{
+    // Add deinitialization logic here
+}
+
+// Program start
+void OnStart()
+{
+    // Add start logic here
+}
+
+// Program stop
+void OnStop()
+{
+    // Add stop logic here
+}
